@@ -93,7 +93,7 @@ button{border:0;padding:10px 12px;border-radius:10px;cursor:pointer}
 <!-- header -->
 <header>
   <div style="text-align:center;">
-    <img src="images/logoduan.jpg"alt = "Vòng Tay Ấm" style="max-width:100px; display:block; margin:0 auto;">
+    <img src="logoduan.jpg"alt = "Vòng Tay Ấm" style="max-width:100px; display:block; margin:0 auto;">
     <div style="margin-top:10px;">
       <div style="font-weight:800; font-size:18px;">VÒNG TAY ẤM Shop</div>
       <div style="font-size:13px; opacity:0.9;">Ôm để thấy mình không lẻ loi</div>
@@ -106,7 +106,7 @@ button{border:0;padding:10px 12px;border-radius:10px;cursor:pointer}
 
 <!-- hero -->
 <div style="display:flex;gap:20px;align-items:center;margin-top:18px;padding:0 16px">
-  <img src=images/dinhchao.jpg" alt="logo" style="width:120px;border-radius:8px">
+  <img src="dinhchao.jpg" alt="logo" style="width:120px;border-radius:8px">
   <div>
     <h2>Người bạn đồng hành của trẻ em</h2>
     <p style="margin:6px 0 0">DÍNH không chỉ là một chú gấu bông, mà còn là vòng tay ấm áp, là nơi lắng nghe và chia sẻ cùng các em nhỏ.</p>
@@ -135,7 +135,7 @@ button{border:0;padding:10px 12px;border-radius:10px;cursor:pointer}
     <h2 style="display:flex;align-items:center;justify-content:center;">Giỏ hàng <span id="count-badge" class="badge">0 sản phẩm</span></h2>
     <!-- empty-cart message -->
     <div id="cart-message" class="empty-cart">
-      <img src=images/dinhgio.png" alt="DÍNH" class="empty-img">
+      <img src="dinhgio.png" alt="DÍNH" class="empty-img">
       <div class="text">
         <h2>DÍNH</h2>
         <p>Giỏ hàng của bạn trống trơn hà 😅</p>
@@ -178,9 +178,9 @@ button{border:0;padding:10px 12px;border-radius:10px;cursor:pointer}
 document.addEventListener("DOMContentLoaded", () => {
 /* ---------- Data ---------- */
 const products = [
-  {id:1,title:"DÍNH Basic",price:200000,img:"images/dinh.jpg",desc:"Em là em, chẳng cần màu mè gì đâu, cứ thế này là đáng yêu nhất!"},
-  {id:2,title:"DÍNH Warm",price:350000,img:"images/dinhngu.jpg",desc:"Ngủ ngon mới là gấu ngoan! Ai bảo em không có phong cách khi đi ngủ nào?"},
-  {id:3,title:"DÍNH Connect",price:550000,img:"images/dinhsang.jpg",desc:"Sống là phải chất! Hôm nay đi tiệc cưới, mai đi sự kiện, gấu em cân hết!"}
+  {id:1,title:"DÍNH Basic",price:200000,img:"dinh.jpg",desc:"Em là em, chẳng cần màu mè gì đâu, cứ thế này là đáng yêu nhất!"},
+  {id:2,title:"DÍNH Warm",price:350000,img:"dinhngu.jpg",desc:"Ngủ ngon mới là gấu ngoan! Ai bảo em không có phong cách khi đi ngủ nào?"},
+  {id:3,title:"DÍNH Connect",price:550000,img:"dinhsang.jpg",desc:"Sống là phải chất! Hôm nay đi tiệc cưới, mai đi sự kiện, gấu em cân hết!"}
 ];
 
 const fmt = n => n.toLocaleString('vi-VN') + 'đ';
@@ -324,7 +324,7 @@ function completeOrder() {
   overlay.className = 'thank-overlay';
   overlay.innerHTML = `
     <div style="text-align:center;padding:30px;background:white;border-radius:12px;box-shadow:0 10px 40px rgba(0,0,0,0.12)">
-      <img src="images/dinhcamon.jpg" style="width:180px;border-radius:8px" alt="Cảm ơn">
+      <img src="dinhcamon.jpg" style="width:180px;border-radius:8px" alt="Cảm ơn">
       <h2 style="margin-top:16px">DÍNH cảm ơn ${name} đã tin tưởng DÍNH 💙</h2>
       <div style="margin-top:16px">
         <button class="btn-primary" onclick="location.reload()" style="margin-right:8px">Quay lại mua sắm</button>
@@ -353,6 +353,7 @@ window.clearCart = clearCart;
 </script>
 </body>
 </html>
+
 
 
 
