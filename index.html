@@ -1,0 +1,355 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>VÒNG TAY ẤM SHOP</title>
+<style>
+:root{--accent:#0ea5a4;--bg:#fafafa;--card:#fff;--muted:#666}
+*{box-sizing:border-box}
+body{font-family:Inter,system-ui,Segoe UI,Roboto,Arial;margin:0;background:var(--bg);color:#111}
+header{background:linear-gradient(90deg,#06b6d4,#0891b2);color:white;padding:18px 20px;display:flex;align-items:center;justify-content:center;position:relative}
+.brand{display:flex;gap:12px;align-items:center}
+.logo{width:44px;height:44px;border-radius:8px;background:white;color:var(--accent);display:grid;place-items:center;font-weight:700}
+
+/* layout */
+.container{max-width:1200px;margin:18px auto;padding:0 16px}
+.products{ /* kept but overridden by #product-grid below */ }
+.card{background:var(--card);padding:12px;border-radius:12px;box-shadow:0 6px 18px rgba(11,22,33,0.06);display:flex;flex-direction:column}
+.card img{width:100%;height:200px;object-fit:cover;border-radius:10px;margin-bottom:10px}
+.title{font-weight:600;margin-bottom:6px}
+.desc{font-size:14px;color:#555;margin:5px 0 10px}
+.price{color:var(--accent);font-weight:700}
+.actions{margin-top:auto;display:flex;gap:8px}
+button{border:0;padding:10px 12px;border-radius:10px;cursor:pointer}
+.btn-primary{background:var(--accent);color:white}
+.btn-outline{background:#f8fafc;border:1px solid #e6eef0}
+#checkoutModal input[type="text"],
+#checkoutModal input[type="email"] {width: 100%;padding: 8px;border: 1px solid #ccc;border-radius: 6px;margin-bottom: 10px;}
+/* cart */
+.cart-section{margin-top:24px}
+.cart-container{background:#00A5C8;padding:18px;border-radius:12px;color:white}
+.cart-list{min-height:30px}
+.cart-item{display:flex;gap:10px;align-items:center;padding:8px 0;border-bottom:1px dashed rgba(255,255,255,0.15)}
+.cart-item img{width:60px;height:40px;object-fit:cover;border-radius:6px}
+.small{font-size:13px;color:rgba(255,255,255,0.9)}
+.badge{background:#fde68a;padding:6px 8px;border-radius:999px;font-weight:600;color:#000;margin-left:10px}
+
+/* empty cart message */
+.empty-cart{display:none;flex-direction:column;align-items:center;justify-content:center;gap:12px;padding:40px 20px;text-align:center;color:#555;background:transparent}
+.empty-cart .empty-img{width:140px;border-radius:12px;object-fit:cover}
+.empty-cart .text h2{font-size:24px;margin:0}
+.empty-cart .text p{margin:8px 0 16px}
+
+/* modal & thank you */
+.modal-bg{position:fixed;inset:0;background:rgba(0,0,0,0.4);display:none;align-items:center;justify-content:center;padding:18px;z-index:999}
+.modal{background:white;padding:18px;border-radius:12px;max-width:680px;width:100%;box-shadow:0 8px 40px rgba(3,7,18,0.24)}
+.thank-overlay{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,0.95);z-index:9999}
+.modal-content{background:white;padding:20px;border-radius:12px;width:320px}
+.modal-content input{width:100%;margin:8px 0;padding:8px;border:1px solid #ccc;border-radius:6px}
+
+/* ====== NEW/OVERRIDES to fix issues seen in screenshots ====== */
+
+/* Product grid: centered, responsive, good card width */
+#product-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 26px;
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 20px 0;
+}
+
+/* Make modal checkout inputs stacked and labels block */
+#checkoutModal .modal-content label { display:block; text-align:left; margin-top:10px; font-weight:600; }
+#checkoutModal .modal-content input { display:block; width:100%; box-sizing:border-box; }
+
+/* Improve checkout inner box sizing */
+#checkoutModal > div { max-width:420px; width:100%; }
+
+/* Modal detail inner layout */
+#modal .modal-inner { display:flex; gap:20px; align-items:flex-start; flex-wrap:wrap; max-width:900px; }
+#modal .modal-inner img { max-width:40%; width:220px; height:auto; border-radius:10px; }
+#modal .modal-inner .info { flex:1; min-width:220px; }
+#modal .modal-inner .info h2 { margin:0 0 8px; font-size:22px; }
+#modal .modal-inner .info p { font-size:15px; line-height:1.5; color:#444; }
+
+/* Ensure thank-overlay inner is limited width */
+.thank-overlay > div { max-width:460px; width:100%; }
+
+/* Buttons spacing inside modals */
+.modal-content .btn-primary, .modal-content .btn-outline { margin-top:12px; }
+
+/* Mobile adjustments */
+@media (max-width:640px) {
+  #modal .modal-inner { flex-direction:column; align-items:center; }
+  #modal .modal-inner img { width:70%; max-width:320px; }
+  #product-grid { grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap:18px; }
+  header { padding:14px; }
+}
+</style>
+</head>
+<body>
+<!-- header -->
+<header>
+  <div style="text-align:center;">
+    <img src="C:\Users\pc\Downloads\logo dự án.jpg" alt="Vòng Tay Ấm" style="max-width:100px; display:block; margin:0 auto;">
+    <div style="margin-top:10px;">
+      <div style="font-weight:800; font-size:18px;">VÒNG TAY ẤM Shop</div>
+      <div style="font-size:13px; opacity:0.9;">Ôm để thấy mình không lẻ loi</div>
+      <p style="margin:5px 0;">Nhà sáng lập: team 9</p>
+      <p style="margin:5px 0;">📞 0901 234 567</p>
+      <p style="margin:0;">✉️ contact@vongtayam.com</p>
+    </div>
+  </div>
+</header>
+
+<!-- hero -->
+<div style="display:flex;gap:20px;align-items:center;margin-top:18px;padding:0 16px">
+  <img src="C:\Users\pc\Downloads\dinhchao.jpg" alt="logo" style="width:120px;border-radius:8px">
+  <div>
+    <h2>Người bạn đồng hành của trẻ em</h2>
+    <p style="margin:6px 0 0">DÍNH không chỉ là một chú gấu bông, mà còn là vòng tay ấm áp, là nơi lắng nghe và chia sẻ cùng các em nhỏ.</p>
+  </div>
+</div>
+
+<div class="container">
+  <div class="values">
+    <h2>Giá trị cốt lõi</h2>
+    <ul>
+      <li>🤗 Vòng tay ôm ấm áp</li>
+      <li>🎤 Lắng nghe & chia sẻ</li>
+      <li>🌱 Làm từ nguyên liệu tái chế</li>
+      <li>💙 Người bạn đồng hành, không để trẻ em cô đơn</li>
+    </ul>
+  </div>
+
+  <!-- product title -->
+  <h2 style="margin-top:24px">Sản phẩm của DÍNH</h2>
+
+  <!-- products (grid centered via #product-grid) -->
+  <div class="products" id="product-grid"></div>
+
+  <!-- cart area -->
+  <div class="cart-section" style="max-width:360px;margin:20px auto 60px;">
+    <h2 style="display:flex;align-items:center;justify-content:center;">Giỏ hàng <span id="count-badge" class="badge">0 sản phẩm</span></h2>
+    <!-- empty-cart message -->
+    <div id="cart-message" class="empty-cart">
+      <img src="C:\Users\pc\Downloads\dínhgio.png" alt="DÍNH" class="empty-img">
+      <div class="text">
+        <h2>DÍNH</h2>
+        <p>Giỏ hàng của bạn trống trơn hà 😅</p>
+        <button class="btn-outline" onclick="document.getElementById('product-grid').scrollIntoView({behavior:'smooth'})">Tiếp tục mua sắm</button>
+      </div>
+    </div>
+    <!-- actual cart -->
+    <div class="cart-container" id="cart-container">
+      <div class="cart-list" id="cart-list"></div>
+      <div style="padding-top:12px; display:flex; align-items:center; justify-content:space-between;">
+        <div>Tổng: <strong id="total">0đ</strong></div>
+        <div style="display:flex;gap:10px">
+          <button id="clear-cart" class="btn-outline">Xóa giỏ hàng</button>
+          <button id="checkout" class="btn-primary">Thanh toán</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- modal product detail -->
+<div id="modal-bg" class="modal-bg"><div id="modal" class="modal"></div></div>
+
+<!-- Modal Checkout (overlay style like thank you) -->
+<div id="checkoutModal" class="thank-overlay" style="display:none;">
+  <div style="text-align:center;padding:30px;background:white;border-radius:12px;box-shadow:0 10px 40px rgba(0,0,0,0.12);max-width:420px;width:100%">
+    <h2>Thông tin thanh toán</h2>
+    <label for="fullName">Họ tên</label>
+    <input type="text" id="fullName" placeholder="Nhập tên của bạn">
+    <label for="email">Email</label>
+    <input type="email" id="email" placeholder="Nhập email">
+    <label style="display:block;margin-top:10px"><input type="checkbox" id="giveOne"> Tôi muốn gửi tặng sản phẩm này</label>
+    <div style="margin-top:16px">
+      <button id="orderBtn" class="btn-primary" disabled>Đặt hàng</button>
+      <button id="closeModal" class="btn-outline">Hủy</button>
+    </div>
+  </div>
+</div>
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+/* ---------- Data ---------- */
+const products = [
+  {id:1,title:"DÍNH Basic",price:200000,img:"images/dinh.jpg",desc:"Em là em, chẳng cần màu mè gì đâu, cứ thế này là đáng yêu nhất!"},
+  {id:2,title:"DÍNH Warm",price:350000,img:"images/dinhngu.jpg",desc:"Ngủ ngon mới là gấu ngoan! Ai bảo em không có phong cách khi đi ngủ nào?"},
+  {id:3,title:"DÍNH Connect",price:550000,img:"images/dinhsang.jpg",desc:"Sống là phải chất! Hôm nay đi tiệc cưới, mai đi sự kiện, gấu em cân hết!"}
+];
+
+const fmt = n => n.toLocaleString('vi-VN') + 'đ';
+let cart = JSON.parse(localStorage.getItem('mock_cart') || '{}');
+
+/* ---------- Elements ---------- */
+const productGrid = document.getElementById('product-grid');
+const cartList = document.getElementById('cart-list');
+const totalEl = document.getElementById('total');
+const countBadge = document.getElementById('count-badge');
+const cartMessage = document.getElementById('cart-message');
+const cartContainer = document.getElementById('cart-container');
+const checkoutBtn = document.getElementById('checkout');
+const clearBtn = document.getElementById('clear-cart');
+const orderBtn = document.getElementById('orderBtn');
+const fullNameInput = document.getElementById('fullName');
+const emailInput = document.getElementById('email');
+
+/* ---------- Render products ---------- */
+function renderProducts(){
+  productGrid.innerHTML = products.map(p => `
+    <div class="card">
+      <img src="${p.img}" alt="${p.title}">
+      <div class="title">${p.title}</div>
+      <div class="desc">${p.desc}</div>
+      <div class="price">${fmt(p.price)}</div>
+      <div class="actions">
+        <button class="btn-outline" onclick="showDetail(${p.id})">Xem</button>
+        <button class="btn-primary" onclick="addToCart(${p.id})">Thêm vào giỏ</button>
+      </div>
+    </div>
+  `).join('');
+}
+
+/* ---------- Modal detail ---------- */
+function showDetail(id){
+  const p = products.find(x=>x.id===id);
+  const modal = document.getElementById('modal');
+  modal.innerHTML = `
+    <div class="modal-inner" style="padding:20px;">
+      <img src="${p.img}" alt="${p.title}">
+      <div class="info">
+        <h2>${p.title}</h2>
+        <div style="font-weight:800">${fmt(p.price)}</div>
+        <p style="margin-top:8px">${p.desc}</p>
+        <div style="margin-top:12px;display:flex;gap:8px">
+          <button class="btn-primary" onclick="addToCart(${p.id}); closeModal()">Thêm vào giỏ</button>
+          <button class="btn-outline" onclick="closeModal()">Đóng</button>
+        </div>
+      </div>
+    </div>
+  `;
+  document.getElementById('modal-bg').style.display='flex';
+}
+function closeModal(){ document.getElementById('modal-bg').style.display='none' }
+
+/* ---------- Cart helpers ---------- */
+function saveCart(){ localStorage.setItem('mock_cart', JSON.stringify(cart)); renderCart(); }
+function addToCart(id){ cart[id] = (cart[id]||0) + 1; saveCart(); }
+function removeFromCart(id){ delete cart[id]; saveCart(); }
+function changeQty(id, delta){ if(!cart[id]) return; cart[id] = Math.max(0, cart[id]+delta); if(cart[id]===0) delete cart[id]; saveCart(); }
+function getTotal(){ return Object.keys(cart).reduce((s, id) => {
+  const p = products.find(x=>x.id == id);
+  return s + (p ? p.price * cart[id] : 0);
+}, 0); }
+function clearCart(){ cart = {}; saveCart(); }
+
+/* ---------- Render cart ---------- */
+function renderCart(){
+  const ids = Object.keys(cart).map(Number);
+  if(ids.length === 0){
+    cartMessage.style.display = 'flex';
+    cartContainer.style.display = 'none';
+    cartList.innerHTML = '';
+    totalEl.textContent = '0đ';
+    countBadge.textContent = '0 sản phẩm';
+    checkoutBtn.disabled = true;
+    return;
+  }
+
+  cartMessage.style.display = 'none';
+  cartContainer.style.display = 'block';
+  checkoutBtn.disabled = false;
+
+  cartList.innerHTML = ids.map(id=>{
+    const p = products.find(x=>x.id===id);
+    if(!p) return '';
+    return `
+      <div class="cart-item">
+        <img src="${p.img}" alt="${p.title}">
+        <div style="flex:1">
+          <div style="font-weight:700">${p.title}</div>
+          <div class="small">${fmt(p.price)} · x${cart[id]}</div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:6px">
+          <div style="display:flex;gap:6px">
+            <button class="btn-outline" onclick="changeQty(${id},-1)">-</button>
+            <button class="btn-outline" onclick="changeQty(${id},1)">+</button>
+          </div>
+          <button class="btn-outline" onclick="removeFromCart(${id})">Xóa</button>
+        </div>
+      </div>
+    `;
+  }).join('');
+
+  totalEl.textContent = fmt(getTotal());
+  countBadge.textContent = Object.values(cart).reduce((a,b)=>a+b,0) + ' sản phẩm';
+}
+
+/* ---------- Checkout ---------- */
+checkoutBtn.addEventListener('click', ()=>{
+  if(Object.keys(cart).length === 0){
+    cartMessage.style.display = 'flex';
+    cartContainer.style.display = 'none';
+    checkoutBtn.disabled = true;
+    return;
+  }
+  document.getElementById('checkoutModal').style.display = 'flex';
+});
+document.getElementById('closeModal').addEventListener('click', () => {
+  document.getElementById('checkoutModal').style.display = 'none';
+});
+document.getElementById('orderBtn').addEventListener('click', completeOrder);
+
+// validate input (disable/enable order button)
+function validateForm(){
+  const name = fullNameInput.value.trim();
+  const email = emailInput.value.trim();
+  orderBtn.disabled = !(name && email);
+}
+fullNameInput.addEventListener('input', validateForm);
+emailInput.addEventListener('input', validateForm);
+
+function completeOrder() {
+  const name  = fullNameInput.value.trim() || 'Khách';
+  cart = {};
+  saveCart();
+  document.getElementById('checkoutModal').style.display = 'none';
+
+  const overlay = document.createElement('div');
+  overlay.className = 'thank-overlay';
+  overlay.innerHTML = `
+    <div style="text-align:center;padding:30px;background:white;border-radius:12px;box-shadow:0 10px 40px rgba(0,0,0,0.12)">
+      <img src="images/dinhcamon.jpg" style="width:180px;border-radius:8px" alt="Cảm ơn">
+      <h2 style="margin-top:16px">DÍNH cảm ơn ${name} đã tin tưởng DÍNH 💙</h2>
+      <div style="margin-top:16px">
+        <button class="btn-primary" onclick="location.reload()" style="margin-right:8px">Quay lại mua sắm</button>
+      </div>
+    </div>
+  `;
+  document.body.appendChild(overlay);
+}
+
+/* ---------- Other events ---------- */
+clearBtn.addEventListener('click', ()=>{ if(Object.keys(cart).length===0) return; if(confirm('Xóa toàn bộ giỏ hàng?')){ clearCart(); } });
+document.getElementById('modal-bg').addEventListener('click', e => { if(e.target.id === 'modal-bg') closeModal(); });
+
+/* ---------- Init ---------- */
+renderProducts();
+renderCart();
+
+/* make available to onclick */
+window.addToCart = addToCart;
+window.showDetail = showDetail;
+window.removeFromCart = removeFromCart;
+window.changeQty = changeQty;
+window.closeModal = closeModal;
+window.clearCart = clearCart;
+});
+</script>
+</body>
+</html>
